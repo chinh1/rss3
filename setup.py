@@ -22,10 +22,9 @@ setting = {
 }
 
 from plugin import *  # FlaskFarm 공용 (PluginModuleBase, render_template, jsonify, request 등)
-from framework.logger import get_logger
+import logging
 
 package_name = __package__
-logger = get_logger(package_name)
 
 # 구버전 rss2에서 사용하던 plugin_info를 호환 차원에서 유지
 plugin_info = {
@@ -40,6 +39,9 @@ plugin_info = {
 }
 
 P = create_plugin_instance(setting)
+
+# 로거: 신형 FlaskFarm에서는 framework.logger가 없을 수 있어 P.logger 우선 사용
+logger = getattr(P, 'logger', logging.getLogger(__package__))
 
 from .mod_main import ModuleSetting, ModuleSite, ModuleScheduler, ModuleGroup, ModuleSearch
 P.set_module_list([ModuleSearch, ModuleGroup, ModuleScheduler, ModuleSite, ModuleSetting])
