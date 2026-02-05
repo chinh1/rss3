@@ -163,7 +163,33 @@ class _BaseModule(PluginModuleBase):
     def get_arg(self, req):
         # 페이지 렌더링에 필요한 arg를 원본 first_menu 로직에서 그대로 가져옴
         from framework import scheduler, app
-        from system.model import ModelSetting as SystemModelSetting
+
+        # 구버전(SJVA/구 FlaskFarm)에서는 system.model.ModelSetting 을 사용했지만
+        # 신형 FlaskFarm에서는 모듈 경로가 달라져 ImportError가 발생할 수 있습니다.
+        # rss3 포팅본은 가능한 한 "동작"을 우선하도록, 설정 모델이 없으면 기본값으로 처리합니다.
+        SystemModelSetting = None
+        try:
+            from system.model import ModelSetting as SystemModelSetting  # type: ignore
+        except Exception:
+            try:
+                from flaskfarm.lib.system.model import ModelSetting as SystemModelSetting  # type: ignore
+            except Exception:
+                try:
+                    from flaskfarm.lib.system import ModelSetting as SystemModelSetting  # type: ignore
+                except Exception:
+                    SystemModelSetting = None
+
+        class _DummySystemSetting:
+            @staticmethod
+            def get(key, default=None):
+                return default
+
+            @staticmethod
+            def get_bool(key, default=False):
+                return default
+
+        if SystemModelSetting is None:
+            SystemModelSetting = _DummySystemSetting
         from .model import ModelSetting, ModelSite2
         arg = {'package_name': package_name}
 
@@ -177,7 +203,7 @@ class _BaseModule(PluginModuleBase):
             pass
 
         elif self.name == 'search':
-            arg['ddns'] = SystemModelSetting.get('ddns')
+            arg['ddns'] = SystemModelSetting.get('ddns', '')
             try:
                 import downloader
                 arg['is_available_normal_download'] = downloader.Logic.is_available_normal_download()
@@ -193,8 +219,8 @@ class _BaseModule(PluginModuleBase):
                 pass
 
             arg['apikey'] = ''
-            if SystemModelSetting.get_bool('auth_use_apikey'):
-                arg['apikey'] = SystemModelSetting.get('auth_apikey')
+            if SystemModelSetting.get_bool('auth_use_apikey', False):
+                arg['apikey'] = SystemModelSetting.get('auth_apikey', '')
 
         return arg
 
