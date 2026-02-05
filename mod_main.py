@@ -202,28 +202,28 @@ class _BaseModule(PluginModuleBase):
 class ModuleSetting(_BaseModule):
     def __init__(self, P):
         super(ModuleSetting, self).__init__(P, name='setting')
-        self.template_name = f'{package_name}_setting.html'
+        self.template_name = 'setting.html'
 
 
 class ModuleSite(_BaseModule):
     def __init__(self, P):
         super(ModuleSite, self).__init__(P, name='site')
-        self.template_name = f'{package_name}_site.html'
+        self.template_name = 'site.html'
 
 
 class ModuleScheduler(_BaseModule):
     def __init__(self, P):
         super(ModuleScheduler, self).__init__(P, name='scheduler')
-        self.template_name = f'{package_name}_scheduler.html'
+        self.template_name = 'scheduler.html'
 
 
 class ModuleGroup(_BaseModule):
     def __init__(self, P):
         super(ModuleGroup, self).__init__(P, name='group')
-        self.template_name = f'{package_name}_group.html'
+        self.template_name = 'group.html'
 
 
 class ModuleSearch(_BaseModule):
     def __init__(self, P):
         super(ModuleSearch, self).__init__(P, name='search')
-        self.template_name = f'{package_name}_search.html'
+        self.template_name = 'search.html'

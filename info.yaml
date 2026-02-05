@@ -1,5 +1,5 @@
 title: "RSS2"
 version: "0.1.0.0"
-package_name: "rss2"
+package_name: "rss3"
 developer: "soju6jan (ported for FlaskFarm)"
 description: "토렌트/게시판 RSS 크롤링 및 검색 플러그인"
